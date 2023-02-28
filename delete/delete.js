@@ -10,15 +10,15 @@ let router = express.Router()
 //create rest api
 router.post("/", (req, res) => {
     let obj = {
-        "p_id": req.body.p_id,        
+        "id": req.body.id      
     }
     //connect to mongodb
     mcl.connect(url, (err, conn) => {
         if (err)
             console.log("Error in connection ", err)
         else {
-            let db = conn.db('nodedb')
-            db.collection('products').deleteOne(obj, (err) => {
+            let db = conn.db('CRS')
+            db.collection('student').deleteOne(obj, (err) => {
                 if (err)
                     res.json({ 'delete': 'error' })
                 else {

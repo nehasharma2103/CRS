@@ -10,17 +10,18 @@ let router = express.Router()
 //create rest api
 router.post("/", (req, res) => {
     let obj = {
-        "p_id": req.body.p_id,
-        "p_name": req.body.p_name,
-        "p_cost": req.body.p_cost
+        "id":req.body.id,
+        "Name": req.body.Name
+       // "percentage": req.body.percentage,
+     //   "p_cost": req.body.p_cost
     }
     //connect to mongodb
     mcl.connect(url, (err, conn) => {
         if (err)
             console.log("Error in connection ", err)
         else {
-            let db = conn.db('nodedb')
-            db.collection('products').insertOne(obj, (err) => {
+            let db = conn.db('CRS')
+            db.collection('student').insertOne(obj, (err) => {
                 if (err)
                     res.json({ 'insert': 'error' })
                 else {
@@ -30,6 +31,30 @@ router.post("/", (req, res) => {
             })
         }
     })
-})
+}),
+/*router.post("/college", (req, res) => {
+    let obj = {
+        "Name": req.body.Name,
+        "cut-off":req.body.cut-off,
+        "Region":req.body.Region
+     //   "p_cost": req.body.p_cost
+    }
+    //connect to mongodb
+    mcl.connect(url, (err, conn) => {
+        if (err)
+            console.log("Error in connection ", err)
+        else {
+            let db = conn.db('CRS')
+            db.collection('colleges').insertOne(obj, (err) => {
+                if (err)
+                    res.json({ 'insert': 'error' })
+                else {
+                    console.log('Data inserted')
+                    res.json({ 'insert': 'success' })
+                }
+            })
+        }
+    })
+})*/
 //export router
 module.exports = router

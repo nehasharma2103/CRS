@@ -10,17 +10,18 @@ let router = express.Router()
 //create rest api
 router.post("/", (req, res) => {
     let p_id = req.body.p_id
-    let obj = {        
-        "p_name": req.body.p_name,
-        "p_cost": req.body.p_cost
+    let obj = {     
+        "id":req.body.id,   
+        "Name": req.body.Name
+        //"percentage": req.body.percentage
     }
     //connect to mongodb
     mcl.connect(url, (err, conn) => {
         if (err)
             console.log("Error in connection ", err)
         else {
-            let db = conn.db('nodedb')
-            db.collection('products').updateOne({p_id : p_id},{$set : obj}, (err) => {
+            let db = conn.db('CRS')
+            db.collection('student').updateOne({p_id : p_id},{$set : obj}, (err) => {
                 if (err)
                     res.json({ 'update': 'error' })
                 else {

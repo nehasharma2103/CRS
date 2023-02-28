@@ -1,0 +1,295 @@
+Interaction with MongoDB
+ - MongoDB is light weight database.
+ - MongoDB follows client server architecture.
+ - MongoDB follows 'mongodb' protocols.
+ - Mongoserver running on port no 27017.
+ - MongoDB supports JSON.
+ - MongoDB is NoSQL database.
+ 
+Installation of MongoDB
+1. Download and install MongoDB(community edition)
+	https://www.mongodb.com/try/download/community
+	
+	===For Windows os===
+2. Create directory structure
+	c:/data/db
+	
+3. set path for environment variables
+	-> computer 
+	-> properties 
+	-> advance system settings
+	-> advanced tab
+	-> environmet veriables
+	-> click on path
+	-> edit
+	-> new
+	-> copy and paste path of installation of mongodb
+	   where mongo.exe and mongod.exe located
+	   
+MongoDB quries (Local Database)
+open two command prompts
+>mongod		-> mongoserver		(May be optional)
+>mongo		-> mongo client		-> auto connect
+
+ - create and switch to database
+	>use nodedb;
+ - create collection
+	>db.createCollection("products")
+ - insert data
+	>db.products.insert({"p_id" : 111, "p_name" : "p_one", "p_cost" : 10000})
+ - fetch data
+	>db.products.find()
+ - show databases
+	>show dbs
+ - delete database
+	>db.dropDatabase()
+	
+For cloud database
+1. Login to mongodb.com (atlas)
+2. Browse collections
+3. Create database 'nodedb' with collection 'products'
+4. Insert documents
+5. Click on databases from left panel
+6. Click on connect
+7. click on Connect to application
+8. Copy url and follow steps below url from web page
+mongodb+srv://admin:admin@mdb.vtkja.mongodb.net/?retryWrites=true&w=majority
+
+<>
+	fetch
+		- fetch.js
+	insert
+		- insert.js
+	update
+		- update.js
+	delete
+		- delete.js
+	 - server.js
+	 - url.js
+
+download modules
+	express
+	mongodb
+	body-parser
+	cors
+	
+***url.js***
+module.exports = "mongodb://localhost:27017"
+//module.exports = "mongodb+srv://admin:admin@mdb.vtkja.mongodb.net/?retryWrites=true&w=majority"
+
+***fetch.js***
+//import modules
+const express = require('express')
+let mongodb = require('mongodb')
+//import url
+let url = require("../url")
+//create mongo client
+let mcl = mongodb.MongoClient
+//create router instance
+let router = express.Router()
+//create rest api
+router.get("/", (req, res) => {
+    //connecto to mongodb
+    mcl.connect(url, (err, conn) => {
+        if (err)
+            console.log("Error in connection:- ", err)
+        else {
+            let db = conn.db("nodedb")
+            db.collection("products").find().toArray((err, array) => {
+                if(err)
+                    console.log("Error while fetching data")
+                else
+                {
+                    console.log("Data sent")
+                    res.json(array)
+                }
+            })
+        }
+    })
+})
+//export router
+module.exports = router
+
+***insert.js***
+//import modules
+const express = require('express')
+let mongodb = require('mongodb')
+//import url
+let url = require("../url")
+//create mongo client
+let mcl = mongodb.MongoClient
+//create router instance
+let router = express.Router()
+//create rest api
+router.post("/", (req, res) => {
+    let obj = {
+        "p_id": req.body.p_id,
+        "p_name": req.body.p_name,
+        "p_cost": req.body.p_cost
+    }
+    //connecto to mongodb
+    mcl.connect(url, (err, conn) => {
+        if (err)
+            console.log("Error in connection:- ", err)
+        else {
+            let db = conn.db("nodedb")
+            db.collection("products").insertOne(obj,(err)=>{
+                if(err)
+                    res.json({'insert':'Error :- '+err})
+                else
+                {
+                    console.log("Data inserted")
+                    res.json({'insert':'success'})
+                }
+            })
+        }
+    })
+})
+//export router
+module.exports = router
+
+***update.js***
+//import modules
+const express = require('express')
+let mongodb = require('mongodb')
+//import url
+let url = require("../url")
+//create mongo client
+let mcl = mongodb.MongoClient
+//create router instance
+let router = express.Router()
+//create rest api
+router.post("/", (req, res) => {
+    let p_id = req.body.p_id
+    let obj = {        
+        "p_name": req.body.p_name,
+        "p_cost": req.body.p_cost
+    }
+    //connecto to mongodb
+    mcl.connect(url, (err, conn) => {
+        if (err)
+            console.log("Error in connection:- ", err)
+        else {
+            let db = conn.db("nodedb")
+            db.collection("products").updateOne({p_id : p_id},{$set : obj},(err)=>{
+                if(err)
+                    res.json({'update':'Error :- '+err})
+                else
+                {
+                    console.log("Data updated")
+                    res.json({'update':'success'})
+                }
+            })
+        }
+    })
+})
+//export router
+module.exports = router
+
+***delete.js***
+//import modules
+const express = require('express')
+let mongodb = require('mongodb')
+//import url
+let url = require("../url")
+//create mongo client
+let mcl = mongodb.MongoClient
+//create router instance
+let router = express.Router()
+//create rest api
+router.post("/", (req, res) => {
+    let obj = {
+        "p_id": req.body.p_id,        
+    }
+    //connecto to mongodb
+    mcl.connect(url, (err, conn) => {
+        if (err)
+            console.log("Error in connection:- ", err)
+        else {
+            let db = conn.db("nodedb")
+            db.collection("products").deleteOne(obj,(err)=>{
+                if(err)
+                    res.json({'delete':'Error :- '+err})
+                else
+                {
+                    console.log("Data deleted")
+                    res.json({'delete':'success'})
+                }
+            })
+        }
+    })
+})
+//export router
+module.exports = router
+
+***server.js***
+//import modules express body-parser cors
+let express = require('express')
+let bodyparser = require('body-parser')
+let cors = require('cors')
+//create rest object
+let app = express()
+//create port
+let port = process.env.PORT || 8080
+//set JSON as MIME type
+app.use(bodyparser.json())
+//client not sending form data -> encoding to JSON
+app.use(bodyparser.urlencoded({ extended: false }))
+//enable CORS -> Cross Origine Resource Sharing -> communication among various ports
+app.use(cors())
+//import fetch insert update delete modules
+let fetch = require("./fetch/fetch")
+let insert = require("./insert/insert")
+let update = require("./update/update")
+let remov = require("./delete/delete")
+//use above modules
+app.use("/fetch",fetch)
+app.use("/insert",insert)
+app.use("/update",update)
+app.use("/delete",remov)
+//assign port no
+app.listen(port,()=>{
+    console.log("Server running on port no :- ",port)
+})
+
+/*
+    >node server
+    Test following URLs with postman
+    http://localhost:8080/fetch     (get)
+    http://localhost:8080/insert    |
+    http://localhost:8080/update    |(post)
+    http://localhost:8080/delete    |
+
+    body -> raw -> json
+
+*/
+
+Hosting the application
+>npm init
+
+1. create '.gitingnore' file
+	>npx gitingnore node
+2. login to github.com and create repository
+3. copy url
+	https://github.com/pranvicomputech/crud8am.git
+4. initialyse local repository
+	>git init
+5. add files to repository
+	>git add .
+6. check status
+	>git status
+7. commit
+	>git commit -m "initial Commit"
+8. add to remote repository
+	>git remote add origin https://github.com/pranvicomputech/crud8am.git
+9. push code to repository
+	>git push -u origin master
+
+Heroku deployment
+1. login to heroku.com
+2. create new app -> mongodbcrudop
+3. click on create app
+4. deployment method git hub - connect to github
+5. choose repository - 
+6. choose manual deploy click on deploy branch
+7. copy url 
