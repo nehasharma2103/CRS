@@ -2,4 +2,4 @@
 //module.exports = "mongodb://localhost:28017"
 // module.exports = "mongodb+srv://admin:admin@mdb.vtkja.mongodb.net/?retryWrites=true&w=majority"
 // module.exports="mongodb+srv://admin:admin@mdb.ros9nlu.mongodb.net/?retryWrites=true&w=majority"
-mondule.exports="mongodb+srv://admin:<admin>@college.mxvuwtf.mongodb.net/?retryWrites=true&w=majority"
+module.exports="mongodb+srv://admin:admin@college.mxvuwtf.mongodb.net/?retryWrites=true&w=majority"
