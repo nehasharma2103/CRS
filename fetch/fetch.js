@@ -58,7 +58,7 @@ router.post("/student", (req, res) => {
                 console.log('Error in connection ', err)
             else {
                 let db = conn.db('CRS')
-                db.collection('college2').find().toArray((err, array) => {
+                db.collection('college1').find().toArray((err, array) => {
                     if (err)
                         console.log('Error while fetching data')
                     else {
