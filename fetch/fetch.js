@@ -20,14 +20,16 @@ function sort_by_key(array, key) {
 
 router.post("/student", (req, res) => {
     //connect to mongodb
-    let stdnm = req.body.name
+    let unm = req.body.userName
+    let pwd = req.body.password
+
     console.log('Inside fetch')
     mcl.connect(url, (err, conn) => {
         console.log('Inside Connect')
         if (err)
             console.log('Error in connection ', err)
         else {
-            let db = conn.db('demo')
+            let db = conn.db('CRS')
             db.collection('student').find().toArray((err, array) => {
                 if (err)
                     console.log('Error while fetching data')
@@ -36,9 +38,10 @@ router.post("/student", (req, res) => {
 
                     //res.json(array)
                     let myarr = array.find((e, i) => {
-                        return e.Name == stdnm
+                        return e.userName == unm && e.password == pwd
                     })
-                    res.json(myarr.percentage)
+                    alert("Login Success")
+                    res.json("login sucessful")
 
                 }
             })
@@ -55,7 +58,7 @@ router.post("/student", (req, res) => {
                 console.log('Error in connection ', err)
             else {
                 let db = conn.db('CRS')
-                db.collection('college1').find().toArray((err, array) => {
+                db.collection('college2').find().toArray((err, array) => {
                     if (err)
                         console.log('Error while fetching data')
                     else {
@@ -67,7 +70,7 @@ router.post("/student", (req, res) => {
         })
     }),
 
-    router.post("/college1", (req, res) => {
+    router.post("/college2", (req, res) => {
         //connect to mongodb
 
         //let stdper = parseFloat(req.body.per).toFixed(2)
@@ -76,7 +79,9 @@ router.post("/student", (req, res) => {
         let maxMerit = req.body.maxMerit
         let clgregion = req.body.Region
         let clgbranch = req.body.branch
+        console.log("Body:- ", req.body)
         mcl.connect(url, (err, conn) => {
+
             // console.log("Percentage from user:- ", stdper)
             console.log("Minimum Merit Score from User:- ", minMerit)
             console.log("Maximum Merit Score from User:- ", maxMerit)
@@ -88,14 +93,14 @@ router.post("/student", (req, res) => {
             else {
                 let db = conn.db('CRS')
                 //db.collection('college').find({ Region: { $eq: clgregion } }).toArray((err, array) => {
-                db.collection('college1').find({ Region: clgregion }).toArray((err, array) => {
+                db.collection('college2').find({ Region: clgregion }).toArray((err, array) => {
                     if (err)
                         console.log('Error while fetching data')
                     else {
                         console.log('Data sent')
 
-                        const filterResult = array.filter(college1 => college1[clgbranch] !== undefined);
-                        const finalResult = array.filter(college1 => college1[clgbranch] >= minMerit && college1[clgbranch] <= maxMerit);
+                        const filterResult = array.filter(college2 => college2[clgbranch] !== undefined);
+                        const finalResult = array.filter(college2 => college2[clgbranch] >= minMerit && college2[clgbranch] <= maxMerit);
                         finalResult.sort((a, b) => a[clgbranch] - b[clgbranch]);
                         res.json(finalResult);
                         /*
@@ -226,7 +231,7 @@ router.post("/student", (req, res) => {
                 })
             }
         })
-    })
+    }),
 //concatenation
 /*
 router.post("/clg", (req, res) => {
@@ -257,6 +262,26 @@ router.post("/clg", (req, res) => {
 
 */
 //export router
+router.get("/std", (req, res) => {
+    //connect to mongodb
+    console.log('Inside fetch')
+    mcl.connect(url, (err, conn) => {
+        console.log('Inside Connect')
+        if (err)
+            console.log('Error in connection ', err)
+        else {
+            let db = conn.db('CRS')
+            db.collection('student').find().toArray((err, array) => {
+                if (err)
+                    console.log('Error while fetching data')
+                else {
+                    console.log('Data sent')
+                    res.json(array)
+                }
+            })
+        }
+    })
+}),
 module.exports = router
 /*
 //create rest api
