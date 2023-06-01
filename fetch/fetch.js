@@ -70,7 +70,7 @@ router.post("/student", (req, res) => {
         })
     }),
 
-    router.post("/college2", (req, res) => {
+    router.post("/college1", (req, res) => {
         //connect to mongodb
 
         //let stdper = parseFloat(req.body.per).toFixed(2)
@@ -93,7 +93,7 @@ router.post("/student", (req, res) => {
             else {
                 let db = conn.db('CRS')
                 //db.collection('college').find({ Region: { $eq: clgregion } }).toArray((err, array) => {
-                db.collection('college2').find({ Region: clgregion }).toArray((err, array) => {
+                db.collection('college1').find({ Region: clgregion }).toArray((err, array) => {
                     if (err)
                         console.log('Error while fetching data')
                     else {
